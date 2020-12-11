@@ -17,7 +17,7 @@ const Login = () => {
     const logar = (event) => {
         event.preventDefault();
 
-        fetch('http://localhost:3000/api/account/login',{
+        fetch('http://localhost:5000/api/Account/login',{
             method : 'POST',
             body : JSON.stringify({
                 email : email,
@@ -78,7 +78,7 @@ const Login = () => {
                         Enviar
                     </Button>
                     <br/><br/>
-                    <a href='/cadastrar' style={{ marginTop :'30px'}}>Já tenho conta!</a>
+                    <a href='/cadastrar' style={{ marginTop :'30px'}}>Não tenho conta!</a>
                 </Form>
             </Container>
             <Rodape />

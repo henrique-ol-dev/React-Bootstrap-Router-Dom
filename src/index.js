@@ -6,11 +6,39 @@ import Login from './pages/login';
 import Cadastrar from './pages/cadastrar';
 import NaoEncontrada from './pages/naoencontrada';
 import Eventos from './pages/eventos';
-import reportWebVitals from './reportWebVitals';
+import DashBoard from './pages/admin/dashboard';
+import CrudCategorias from './pages/admin/crudcategorias';
+import CrudEventos from './pages/admin/crudeventos';
+
+import jwt_decode from 'jwt-decode';
+import * as serviceWorker from './serviceWorker';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import DashBoard from './pages/admin/dashboard';
+import { BrowserRouter as Router, Redirect, Route, Switch } from "react-router-dom";
+
+const RotaPrivada = ({ component: Component, ...rest }) => (
+  <Route
+    {...rest}
+    render={
+      props =>
+        localStorage.getItem('token-nyous-tarde') !== null ?
+          <Component {...props} /> :
+          <Redirect to={{ pathname: '/login', state: { from: props.location } }} />
+    }
+  />
+);
+
+const RotaPrivadaAdmin = ({ component: Component, ...rest }) => (
+  <Route
+    {...rest}
+    render={
+      props =>
+        localStorage.getItem('token-nyous-tarde') !== null && jwt_decode(localStorage.getItem('token-nyous-tarde')).role === 'Admin' ?
+          <Component {...props} /> :
+          <Redirect to={{ pathname: '/login', state: { from: props.location } }} />
+    }
+  />
+);
 
 const routing = (
   <Router>
@@ -18,8 +46,10 @@ const routing = (
       <Route exact path='/' component={Home} />
       <Route path='/login' component={Login} />
       <Route path='/cadastrar' component={Cadastrar} />
-      <Route path='/eventos' component={Eventos} />
-      <Route path='/admin/dashboard' component={DashBoard} />
+      <RotaPrivada path='/eventos' titulo="login" component={Eventos} />
+      <RotaPrivadaAdmin path='/admin/dashboard' component={DashBoard} />
+      <RotaPrivadaAdmin path='/admin/categorias' component={CrudCategorias} />
+      <RotaPrivadaAdmin path='/admin/eventos' component={CrudEventos} />
       <Route component={NaoEncontrada} />
     </Switch>
   </Router>
@@ -27,11 +57,11 @@ const routing = (
 
 
 ReactDOM.render(
-    routing,
+  routing,
   document.getElementById('root')
 );
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+serviceWorker.unregister();
