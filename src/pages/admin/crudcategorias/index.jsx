@@ -123,6 +123,8 @@ const CrudCategorias = () => {
         <div>
             <Menu />
             <Container>
+            <Titulo titulo="Categorias" chamada="Faça o crud completo das categorias do sistema" />
+            
                 <Card>
                     <Card.Body>
                         <Form onSubmit={event => salvar(event)}>
